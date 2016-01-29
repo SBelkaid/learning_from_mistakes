@@ -1,0 +1,16 @@
+- Antwoorden gelijk feedback geven of achteraf nadat alle vragen zijn gemaakt.
+- De feedback in de frame zetten of losse window
+- Kunnen we hints geven, los van de opdracht, we zouden ook de opdracht de hele tijd in beeld kunnen laten
+- Open vragen of multiple choice
+
+to do:
+- Running GUI Code Three Ways --> check programming python book 
+- DONE Storing values of checkbuttons
+- DONE adding correct answers to question dictionairy 
+- Checking the values, build a seperate fram element for checking freely typed input in text widget
+- Adding counter to let user know which question it is
+- Displaying help text, if question hasn't been answered correctly, help text should be generated based on mistake made
+- Instead of multiple choice make a text field and store the value
+- Make a main display where one can navigate throught the questions. So the first page displays the amount of exercises the
+page after displays the amount of questions a certain exercis has.
+- Finishing screen, after the exercises have been made display overview.
