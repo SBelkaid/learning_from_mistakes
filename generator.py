@@ -1,10 +1,8 @@
 import sys
 import json
-sys.path.insert(0,'/Users/soufyanbelkaid/Research/The Network Inst/Programming Python GUI')
-sys.path.insert(0,'/Users/soufyanbelkaid/Research/The Network Inst/exercises')
+sys.path.insert(0,'../exercises')
 from Tkinter import *
 from A import *
-from quitter import Quitter
 from collections import deque
 from EntryCustom import CustomEntryForm
 from tkMessageBox import askokcancel
@@ -27,6 +25,7 @@ class QuestionGenerator(Tk):
 		count = 0
 		self.exercise_frame_container = {}
 		for ex in self.all_questions:
+			print ex
 			f = ExerciseFrame(ex, self.container, self)
 			self.exercise_frame_container[ex] = f
 			f.__name__ = ex
@@ -51,10 +50,11 @@ class QuestionGenerator(Tk):
 	def show_question(self, f=None):
 		print 'button has been pressed for show_question'
 		if f:
-			print self.exercise_frame_container.keys()
+			print f
+			# print self.exercise_frame_container.keys()
 			frame = self.exercise_frame_container[f]
 			frame.tkraise()
-			print self.container.winfo_children()
+			# print self.container.winfo_children()
 
 class StartPage(Frame):
     def __init__(self, parent=None, controller=None, *args, **kwargs):
@@ -62,9 +62,11 @@ class StartPage(Frame):
     	self.controller = controller
         label = Label(self, text="This is an overview of the exercises", font=TITLE_FONT)
         label.pack(side=TOP, fill=X, pady=10)
-        Button(self, text='Ex 1', command=lambda:controller.show_question('EX_1')).pack()
-        Button(self, text='Ex 2', command=lambda:controller.show_question('EX_2')).pack()
-        Button(self, text='Ex 3', command=lambda:controller.show_question('EX_3')).pack()
+        exercises = controller.all_questions.keys()
+        exercises.sort()
+        for ex in exercises:
+        	# print ex
+        	Button(self, text=ex, command=lambda:controller.show_question(ex)).pack()
 
 class ExerciseFrame(Frame):
 	def __init__(self, ex_id, parent=None, controller=None,*args, **kwargs):
