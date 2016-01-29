@@ -1,6 +1,6 @@
 import sys
 import json
-sys.path.insert(0,'../exercises')
+sys.path.insert(0,'exercises')
 from Tkinter import *
 from A import *
 from collections import deque
