@@ -42,7 +42,7 @@ class QuestionGenerator(Tk):
 		#code for debugging, loking at the stacking order. 
 		# print "frames dictionairy", self.exercise_frame_container, '\n\n\n\n'
 		# print "children of self: ", self.winfo_children(), '\n\n\n'
-		# print "children of container that's within self", self.container.winfo_children()
+		# print "children of container that's within self", [e.__name__ for e in self.container.winfo_children()]
 		# print [e.__name__ for e in self.container.winfo_children()]
 		# print len(self.container.winfo_children())
 		# print len(self.winfo_children())
@@ -51,6 +51,8 @@ class QuestionGenerator(Tk):
 		print 'button has been pressed for show_question'
 		if f:
 			print f
+			print "looking for exercise: {}".format(f)
+			# print "\n\n stacking order {}".format(self.winfo_children())
 			# print self.exercise_frame_container.keys()
 			frame = self.exercise_frame_container[f]
 			frame.tkraise()
@@ -65,8 +67,8 @@ class StartPage(Frame):
         exercises = controller.all_questions.keys()
         exercises.sort()
         for ex in exercises:
-        	# print ex
-        	Button(self, text=ex, command=lambda:controller.show_question(ex)).pack()
+        	print "from startpage showing the possible exercises", ex
+        	Button(self, text=ex, command=lambda x=ex:controller.show_question(x)).pack()
 
 class ExerciseFrame(Frame):
 	def __init__(self, ex_id, parent=None, controller=None,*args, **kwargs):
@@ -84,8 +86,8 @@ class ExerciseFrame(Frame):
 
 		#Buttons to raise another question frame to the front
 		for other in other_exercises:
-			print 'These are the other exercises in the container', other_exercises
-			Button(self, text=other, command=lambda:controller.show_question(other)).pack(side=LEFT)
+			# print 'These are the other exercises in the container', other_exercises
+			Button(self, text=other, command=lambda x=other:controller.show_question(x)).pack(side=LEFT)
 		Button(self, text='Start Page', command=lambda:controller.show_question('StartPage')).pack(side=LEFT)
 
 	def initialize_questions(self, event):
