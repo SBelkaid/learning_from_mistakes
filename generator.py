@@ -58,6 +58,9 @@ class QuestionGenerator(Tk):
 			frame.tkraise()
 			# print self.container.winfo_children()
 
+	def report(self, event, data):
+		print data
+
 class StartPage(Frame):
     def __init__(self, parent=None, controller=None, *args, **kwargs):
     	Frame.__init__(self, parent, *args, **kwargs)
@@ -82,6 +85,7 @@ class ExerciseFrame(Frame):
 		explanation_label = Label(self, text=self.controller.all_questions[ex_id]['explanation'])
 		explanation_label.pack()
 		explanation_label.bind('<Button-1>', lambda x:self.initialize_questions(x))
+		self.current_question = 1
 
 
 		#Buttons to raise another question frame to the front
@@ -94,13 +98,14 @@ class ExerciseFrame(Frame):
 		print 'starting to show questions'
 		self.question_frame_container = {}
 		for question_id in self.controller.all_questions[self.ex_id].keys():
-			q_f = QuestionFrame(question_id, self, self.controller)
-			self.question_frame_container[question_id] = q_f
-			q_f.__name__ = "question {}".format(question_id)
-			q_f.grid(row=0, column=0, sticky="nsew")
+			if question_id != 'explanation':
+				q_f = QuestionFrame(question_id, self, self.controller)
+				self.question_frame_container[question_id] = q_f
+				q_f.__name__ = "question {}".format(question_id)
+				q_f.grid(row=0, column=0, sticky="nsew")
 		# print self.winfo_children()
 		self.clear_questions()
-		self.show_question_by_id('1')
+		self.show_question_by_id(str(self.current_question))
 
 	def show_question_by_id(self, question_number):
 		to_show = self.question_frame_container[question_number]
@@ -112,16 +117,31 @@ class ExerciseFrame(Frame):
 		print zip(*self.question_frame_container.items())[1]
 		# if self.question_frame_container:
 			# frames = zip(*self.question_frame_container.items())[1]
-
+			# [e.destroy() for e in frames]
 
 class QuestionFrame(Frame):
 	def __init__(self, question_id, parent, controller, *args, **kwargs):
 		Frame.__init__(self, parent, *args, **kwargs)
 		self.controller = controller
+		self.parent = parent
+		self.parent.config(bg='yellow')
 		self.config(bg='blue')
-		self.pack(expand=True)
-		Label(self, text='this is a question {}'.format(question_id), font=TITLE_FONT).pack()
-		Button(self, text='BUTTON', command=lambda:self.quit()).pack()
+		self.pack(expand=True, side=BOTTOM)
+		text = controller.all_questions[self.parent.ex_id][question_id]['question']
+		Label(self, text=text, font=TITLE_FONT).pack()
+		CustomEntryForm(self, controller)
+		Button(self, text='Next', command=lambda:self.nextQuestion()).pack(side=LEFT)
+		Button(self, text='Previous', command=lambda:self.previousQuestion()).pack(side=LEFT)
+		Button(self, text='quit', command=lambda:self.quit()).pack(side=LEFT)
+
+	def nextQuestion(self):
+		self.parent.current_question += 1
+		self.parent.show_question_by_id(str(self.parent.current_question))
+
+	def previousQuestion(self):
+		if not self.parent.current_question == 1: 
+			self.parent.current_question -= 1
+			self.parent.show_question_by_id(str(self.parent.current_question))
 
 if __name__ == '__main__':
 	QuestionGenerator().mainloop()
