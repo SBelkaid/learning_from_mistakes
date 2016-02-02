@@ -77,6 +77,8 @@ class ExerciseFrame(Frame):
 	def __init__(self, ex_id, parent=None, controller=None,*args, **kwargs):
 		Frame.__init__(self, parent, *args, **kwargs)
 		self.controller = controller
+		self.grid_rowconfigure(0, weight=1)
+		self.grid_columnconfigure(0, weight=1)
 		self.ex_id = ex_id
 		Label(self, text='Exercise '+str(ex_id)).pack()
 		other_exercises = filter(lambda x: x != ex_id, self.controller.all_questions)
@@ -102,7 +104,9 @@ class ExerciseFrame(Frame):
 				q_f = QuestionFrame(question_id, self, self.controller)
 				self.question_frame_container[question_id] = q_f
 				q_f.__name__ = "question {}".format(question_id)
-				q_f.grid(row=0, column=0, sticky="nsew")
+				q_f.grid(row=0, column=0, sticky=NSEW)
+				q_f.rowconfigure(0, weight=1)
+				# q_f.columnconfigure(0, weight=1)
 		# print self.winfo_children()
 		self.clear_questions()
 		self.show_question_by_id(str(self.current_question))
@@ -126,7 +130,7 @@ class QuestionFrame(Frame):
 		self.parent = parent
 		self.parent.config(bg='yellow')
 		self.config(bg='blue')
-		self.pack(expand=True, side=BOTTOM)
+		# self.pack(expand=True, side=BOTTOM)
 		text = controller.all_questions[self.parent.ex_id][question_id]['question']
 		Label(self, text=text, font=TITLE_FONT).pack()
 		CustomEntryForm(self, controller)
@@ -135,8 +139,10 @@ class QuestionFrame(Frame):
 		Button(self, text='quit', command=lambda:self.quit()).pack(side=LEFT)
 
 	def nextQuestion(self):
-		self.parent.current_question += 1
-		self.parent.show_question_by_id(str(self.parent.current_question))
+		if not self.parent.current_question == \
+					len(self.controller.all_questions[self.parent.ex_id].keys())-1:
+			self.parent.current_question += 1
+			self.parent.show_question_by_id(str(self.parent.current_question))
 
 	def previousQuestion(self):
 		if not self.parent.current_question == 1: 
