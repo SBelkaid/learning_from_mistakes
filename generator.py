@@ -57,11 +57,21 @@ class QuestionGenerator(Tk):
 			frame.tkraise()
 			# print self.container.winfo_children()
 
-	def report(self, event, data):
+	def report(self, input_val, ex_id, question_id):
 		'''
 		currently it prints the input of the user in  the entry of the questions frames
+		This function should check the input or correctness. How to find the correct answer first?
+		- pass with function call?
+		- Controller actually should control all data, and the current question etc.
+
 		'''
-		print data
+		correct_answer = self.all_questions[ex_id][str(question_id)]['correct_answer']
+		print input_val, ex_id, question_id, correct_answer
+		input_val
+		if input_val != correct_answer:
+			print 'incorrect'
+		else:
+			print "correct"
 
 class StartPage(Frame):
     def __init__(self, parent=None, controller=None, *args, **kwargs):
@@ -129,6 +139,8 @@ class QuestionFrame(Frame):
 		Frame.__init__(self, parent, *args, **kwargs)
 		self.controller = controller
 		self.parent = parent
+		self.parent_exercise_id = parent.ex_id
+		self.parent.current_question = 1
 		# self.config(bg='blue')
 		text = controller.all_questions[self.parent.ex_id][question_id]['question']
 		Label(self, text=text, font=TITLE_FONT).pack()
