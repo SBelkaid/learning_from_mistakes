@@ -18,12 +18,17 @@ class CustomEntryForm(Frame):
 		self.input_field.bind('<Button-1>', 
 				lambda x: self.clearOnClick(x))
 		self.input_field.bind('<Return>', 
-				lambda x: self.controller.report(x, self.input_field.get()))
+				lambda x: self.prepareQuestionData())
 		self.input_field.insert(0,'Type input..')
 		self.count_clicks = 0
 		self.submit_btn = Button(self, text='Submit', 
-				command=lambda:self.controller.report(None, self.input_field.get()))
+				command=lambda:self.prepareQuestionData())
 		self.submit_btn.pack(pady=5, side=LEFT)
+
+	def prepareQuestionData(self):
+		cur_exercise = self.parent.parent_exercise_id
+		cur_question = self.parent.parent.current_question #probably not the best way to do this
+		self.controller.report(self.input_field.get(), cur_exercise, cur_question)
 
 	def clearOnClick(self, event):
 		'''
@@ -33,7 +38,6 @@ class CustomEntryForm(Frame):
 			self.input_field.delete(0, 'end') 
 		self.count_clicks += 1
 		print "clicked the input button"
-
 
 
 if __name__ == '__main__':

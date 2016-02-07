@@ -59,7 +59,7 @@ class QuestionGenerator(Tk):
 
 	def report(self, input_val, ex_id, question_id):
 		'''
-		currently it prints the input of the user in  the entry of the questions frames
+		currently it prints the input of the user in the entry of the questions frames
 		This function should check the input or correctness. How to find the correct answer first?
 		- pass with function call?
 		- Controller actually should control all data, and the current question etc.
