@@ -57,22 +57,6 @@ class QuestionGenerator(Tk):
 			frame.tkraise()
 			# print self.container.winfo_children()
 
-	def report(self, input_val, ex_id, question_id):
-		'''
-		currently it prints the input of the user in the entry of the questions frames
-		This function should check the input or correctness. How to find the correct answer first?
-		- pass with function call?
-		- Controller actually should control all data, and the current question etc.
-
-		'''
-		correct_answer = self.all_questions[ex_id][str(question_id)]['correct_answer']
-		print input_val, ex_id, question_id, correct_answer
-		input_val
-		if input_val != correct_answer:
-			print 'incorrect'
-		else:
-			print "correct"
-
 class StartPage(Frame):
     def __init__(self, parent=None, controller=None, *args, **kwargs):
     	Frame.__init__(self, parent, *args, **kwargs)
@@ -86,6 +70,10 @@ class StartPage(Frame):
         	Button(self, text=ex, command=lambda x=ex:controller.show_question(x)).pack()
 
 class ExerciseFrame(Frame):
+	'''
+	I guess this is a controller in a controller. Probably not the right thing to do
+	But it does control all the frames in the question_frame_container
+	'''
 	def __init__(self, ex_id, parent=None, controller=None,*args, **kwargs):
 		Frame.__init__(self, parent, *args, **kwargs)
 		self.controller = controller
@@ -133,6 +121,45 @@ class ExerciseFrame(Frame):
 		# if self.question_frame_container:
 			# frames = zip(*self.question_frame_container.items())[1]
 			# [e.destroy() for e in frames]
+	
+	def report(self, input_val, ex_id, question_id):
+		'''
+		currently it prints the input of the user in the entry of the questions frames
+		This function should check the input or correctness. How to find the correct answer first?
+		- pass with function call?
+		- Controller actually should control all data, and the current question etc.
+
+		'''
+		correct_answer = QuestionGenerator.all_questions[ex_id][str(question_id)]['correct_answer']
+		print input_val, ex_id, question_id, correct_answer
+		input_val = input_val.encode('utf8')
+		correct_answer = correct_answer.encode('utf8')
+
+		if input_val != correct_answer:
+			self.handleIncorrect(input_val, correct_answer)
+		else:
+			print "correct"
+			self.changeColorEntryWidget('green')
+	
+	def changeColorEntryWidget(self, color):
+		for f in self.question_frame_container[str(self.current_question)].winfo_children():
+			entry_widget = f.__dict__.get('input_field')
+			if entry_widget: 
+				entry_widget.configure(highlightbackground=color, highlightcolor=color)
+
+	def handleIncorrect(self, incorrect_input, correct_input):
+		'''
+		It should generate feedback based on the input of the user it also
+		makes the entry widget red.
+		functions does the following:
+			find all objects in the QuestionFrameContainer
+			list the attributes of the class 
+			if it contains a input_field attribute that must be the Entry widget
+			created by instanciating EntryCustom
+		'''
+		print 'You have answered incorrectly {}, the correct answer is {}'\
+					.format(incorrect_input, correct_input)
+		self.changeColorEntryWidget('red')
 
 class QuestionFrame(Frame):
 	def __init__(self, question_id, parent, controller, *args, **kwargs):
@@ -170,7 +197,6 @@ class QuestionFrame(Frame):
 		if not self.parent.current_question == 1: 
 			self.parent.current_question -= 1
 			self.parent.show_question_by_id(str(self.parent.current_question))
-
 
 if __name__ == '__main__':
 	QuestionGenerator().mainloop()

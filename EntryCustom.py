@@ -28,7 +28,7 @@ class CustomEntryForm(Frame):
 	def prepareQuestionData(self):
 		cur_exercise = self.parent.parent_exercise_id
 		cur_question = self.parent.parent.current_question #probably not the best way to do this
-		self.controller.report(self.input_field.get(), cur_exercise, cur_question)
+		self.parent.parent.report(self.input_field.get(), cur_exercise, cur_question)
 
 	def clearOnClick(self, event):
 		'''
