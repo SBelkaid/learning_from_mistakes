@@ -38,7 +38,6 @@ class QuestionGenerator(Tk):
 		self.exercise_frame_container[StartPage.__name__] = self.starter
 		self.starter.grid(row=0, column=0, sticky="nsew")
 
-
 		#code for debugging, loking at the stacking order. 
 		# print "frames dictionairy", self.exercise_frame_container, '\n\n\n\n'
 		# print "children of self: ", self.winfo_children(), '\n\n\n'
@@ -59,6 +58,9 @@ class QuestionGenerator(Tk):
 			# print self.container.winfo_children()
 
 	def report(self, event, data):
+		'''
+		currently it prints the input of the user in  the entry of the questions frames
+		'''
 		print data
 
 class StartPage(Frame):
@@ -89,7 +91,6 @@ class ExerciseFrame(Frame):
 		explanation_label.bind('<Button-1>', lambda x:self.initialize_questions(x))
 		self.current_question = 1
 
-
 		#Buttons to raise another question frame to the front
 		for other in other_exercises:
 			# print 'These are the other exercises in the container', other_exercises
@@ -106,7 +107,7 @@ class ExerciseFrame(Frame):
 				q_f.__name__ = "question {}".format(question_id)
 				q_f.grid(row=0, column=0, sticky=NSEW)
 				q_f.rowconfigure(0, weight=1)
-				# q_f.columnconfigure(0, weight=1)
+
 		# print self.winfo_children()
 		self.clear_questions()
 		self.show_question_by_id(str(self.current_question))
@@ -128,26 +129,36 @@ class QuestionFrame(Frame):
 		Frame.__init__(self, parent, *args, **kwargs)
 		self.controller = controller
 		self.parent = parent
-		self.parent.config(bg='yellow')
-		self.config(bg='blue')
-		# self.pack(expand=True, side=BOTTOM)
+		# self.config(bg='blue')
 		text = controller.all_questions[self.parent.ex_id][question_id]['question']
 		Label(self, text=text, font=TITLE_FONT).pack()
 		CustomEntryForm(self, controller)
-		Button(self, text='Next', command=lambda:self.nextQuestion()).pack(side=LEFT)
-		Button(self, text='Previous', command=lambda:self.previousQuestion()).pack(side=LEFT)
+		self.nxt_btn = Button(self, text='Next',\
+				 command=lambda:self.nextQuestion())
+		self.prev_btn = Button(self, text='Previous',\
+				 command=lambda:self.previousQuestion())
+		self.nxt_btn.pack(side=LEFT)
+		self.prev_btn.pack(side=LEFT)
 		Button(self, text='quit', command=lambda:self.quit()).pack(side=LEFT)
 
 	def nextQuestion(self):
+		question_list = self.controller.all_questions[self.parent.ex_id].keys()
+		# pquestion_list.index(str(self.parent.current_question))
+		if question_list.index(str(self.parent.current_question))==int(question_list[-1]):
+			print 'Move on to next exercise'
 		if not self.parent.current_question == \
 					len(self.controller.all_questions[self.parent.ex_id].keys())-1:
 			self.parent.current_question += 1
 			self.parent.show_question_by_id(str(self.parent.current_question))
 
 	def previousQuestion(self):
+		question_list = self.controller.all_questions[self.parent.ex_id].keys()
+		print question_list
+		print question_list.index(str(self.parent.current_question))
 		if not self.parent.current_question == 1: 
 			self.parent.current_question -= 1
 			self.parent.show_question_by_id(str(self.parent.current_question))
+
 
 if __name__ == '__main__':
 	QuestionGenerator().mainloop()
