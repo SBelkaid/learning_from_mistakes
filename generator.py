@@ -81,19 +81,19 @@ class ExerciseFrame(Frame):
 		self.grid_columnconfigure(0, weight=1)
 		self.ex_id = ex_id
 		Label(self, text='Exercise '+str(ex_id)).pack()
-		other_exercises = filter(lambda x: x != ex_id, self.controller.all_questions)
-		other_exercises.sort()
-		# print 'These are the other exercises: ', other_exercises
+		self.other_exercises = filter(lambda x: x != ex_id, self.controller.all_questions)
+		self.other_exercises.sort()
+		# print 'These are the other exercises: ', self.other_exercises
 		explanation_label = Label(self, text=self.controller.all_questions[ex_id]['explanation'])
 		explanation_label.pack()
 		explanation_label.bind('<Button-1>', lambda x:self.initialize_questions(x))
 		self.current_question = 1
 
 		#Buttons to raise another question frame to the front
-		for other in other_exercises:
-			# print 'These are the other exercises in the container', other_exercises
-			Button(self, text=other, command=lambda x=other:controller.show_question(x)).pack(side=LEFT)
-		Button(self, text='Start Page', command=lambda:controller.show_question('StartPage')).pack(side=LEFT)
+		for other in self.other_exercises:
+			# print 'These are the other exercises in the container', self.other_exercises
+			Button(self, text=other, command=lambda x=other:self.controller.show_question(x)).pack(side=LEFT)
+		Button(self, text='Start Page', command=lambda:self.controller.show_question('StartPage')).pack(side=LEFT)
 
 	def initialize_questions(self, event):
 		print 'starting to show questions'
@@ -109,6 +109,13 @@ class ExerciseFrame(Frame):
 		# print self.winfo_children()
 		self.clear_questions()
 		self.show_question_by_id(str(self.current_question))
+
+	def nextExercise(self):
+		print 'current exercise is {}'.format(self.ex_id)
+		print 'the other exercises are {}'.format(self.other_exercises)
+		# self.controller.show_question(self.other_exercises[0])
+		self.controller.show_question('StartPage')
+		# print self.other_exercises[0]
 
 	def show_question_by_id(self, question_number):
 		to_show = self.question_frame_container[question_number]
@@ -184,7 +191,8 @@ class QuestionFrame(Frame):
 		question_list = self.controller.all_questions[self.parent.ex_id].keys()
 		# pquestion_list.index(str(self.parent.current_question))
 		if question_list.index(str(self.parent.current_question))==int(question_list[-1]):
-			print 'Move on to next exercise'
+			print 'Move on to next exercise, still need to implement this.'
+			self.parent.nextExercise()
 		if not self.parent.current_question == \
 					len(self.controller.all_questions[self.parent.ex_id].keys())-1:
 			self.parent.current_question += 1
