@@ -152,7 +152,8 @@ class ExerciseFrame(Frame):
 		for f in self.question_frame_container[str(self.current_question)].winfo_children():
 			entry_widget = f.__dict__.get('input_field')
 			if entry_widget: 
-				entry_widget.configure(highlightbackground=color, highlightcolor=color)
+				# entry_widget.configure(highlightbackground=color, highlightcolor=color) Doesnt work for windows
+				entry_widget.configure(foreground=color)
 
 	def handleIncorrect(self, incorrect_input, correct_input):
 		'''
