@@ -40,7 +40,7 @@ class QuestionGenerator(Tk):
 
 		#code for debugging, loking at the stacking order. 
 		# print "frames dictionairy", self.exercise_frame_container, '\n\n\n\n'
-		# print "children of self: ", self.winfo_children(), '\n\n\n'
+		print "children of self: ", self.winfo_children(), '\n\n\n'
 		# print "children of container that's within self", [e.__name__ for e in self.container.winfo_children()]
 		# print [e.__name__ for e in self.container.winfo_children()]
 		# print len(self.container.winfo_children())
@@ -107,6 +107,7 @@ class ExerciseFrame(Frame):
 				q_f.rowconfigure(0, weight=1)
 
 		# print self.winfo_children()
+
 		self.clear_questions()
 		self.show_question_by_id(str(self.current_question))
 
@@ -177,15 +178,18 @@ class QuestionFrame(Frame):
 		self.parent_exercise_id = parent.ex_id
 		self.parent.current_question = 1
 		# self.config(bg='blue')
-		text = controller.all_questions[self.parent.ex_id][question_id]['question']
+		text = self.controller.all_questions[self.parent.ex_id][question_id]['question']
 		Label(self, text=text, font=TITLE_FONT).pack()
 		CustomEntryForm(self, controller)
 		self.nxt_btn = Button(self, text='Next',\
 				 command=lambda:self.nextQuestion())
 		self.prev_btn = Button(self, text='Previous',\
 				 command=lambda:self.previousQuestion())
+		self.exp_btn = Button(self, text='Explanation',\
+				 command=lambda:self.showExplanation())
 		self.nxt_btn.pack(side=LEFT)
 		self.prev_btn.pack(side=LEFT)
+		self.exp_btn.pack(side=LEFT)
 		Button(self, text='quit', command=lambda:self.quit()).pack(side=LEFT)
 
 	def nextQuestion(self):
@@ -206,6 +210,17 @@ class QuestionFrame(Frame):
 		if not self.parent.current_question == 1: 
 			self.parent.current_question -= 1
 			self.parent.show_question_by_id(str(self.parent.current_question))
+		print self.winfo_children()
+
+	def showExplanation(self):
+		print "executing explanation function"
+		print self.controller.all_questions[self.parent.ex_id]['explanation']
+		Toplevel()
+		# t.wm_title("Another Window")
+		# l = Label(t, text="This is window")
+		# l.pack(side="top", fill="both", expand=True, padx=100, pady=100)
+
+
 
 if __name__ == '__main__':
 	QuestionGenerator().mainloop()
